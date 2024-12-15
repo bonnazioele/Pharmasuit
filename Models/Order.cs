@@ -1,4 +1,6 @@
-﻿namespace Pharmasuit.Models
+﻿using Pharmasuit.Models;
+
+namespace Pharmasuit.Models
 {
     public class Order
     {
@@ -16,4 +18,6 @@ public class ProductOrder
     public int Id { get; set; }
     public int ProductId { get; set; }
     public int Quantity { get; set; }
+
+    public Product Product { get; set; }
 }

@@ -1,6 +1,7 @@
-﻿namespace Pharmasuit.Models
+﻿using Microsoft.AspNetCore.Identity;
+namespace Pharmasuit.Models
 {
-    public class Account
+    public class Account: IdentityUser
     {
         
             public int Id { get; set; }
