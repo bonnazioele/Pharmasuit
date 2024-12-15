@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pharmasuit.Data;
+using Pharmasuit.Services;
 using Pharmasuit.Models;
 
 namespace Pharmasuit.Controllers
@@ -13,10 +9,12 @@ namespace Pharmasuit.Controllers
     public class ProductsController : Controller
     {
         private readonly PharmasuitContext _context;
+        private readonly CartService _cartService;
 
-        public ProductsController(PharmasuitContext context)
+        public ProductsController(PharmasuitContext context, CartService cartService)
         {
             _context = context;
+            _cartService = cartService;
         }
 
         public IActionResult Index()
@@ -27,35 +25,28 @@ namespace Pharmasuit.Controllers
 
         public IActionResult Details(int id)
         {
-            var product = _context.Products.Find(id);
-            if (product == null) return NotFound();
+            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+            if (product == null)
+            {
+                return NotFound();
+            }
             return View(product);
         }
 
         [HttpPost]
-        public IActionResult Create(Product product)
+        public IActionResult AddToCart(int productId, int quantity = 1)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Products.Add(product);
-                _context.SaveChanges();
+                _cartService.AddToCart(productId, quantity);
+                TempData["SuccessMessage"] = "Product added to cart successfully!";
                 return RedirectToAction("Index");
             }
-            return View(product);
-        }
-
-        [HttpPost]
-        public IActionResult Delete(int id)
-        {
-            var product = _context.Products.Find(id);
-            if (product != null)
+            catch (ArgumentException ex)
             {
-                _context.Products.Remove(product);
-                _context.SaveChanges();
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");
         }
     }
 }
-
-

@@ -1,47 +1,78 @@
-﻿@model IEnumerable<Pharmasuit.Models.Order>
+﻿@model Pharmasuit.Dto.OrderCreateDto
 
-@{
-    ViewData["Title"] = "Index";
+<div class="container">
+    <h2>Create New Order</h2>
+    <form asp-action="Create" method="post">
+        <div class="form-group">
+            <label>Customer Name</label>
+            <input asp-for="CustomerName" class="form-control" required />
+            <span asp-validation-for="CustomerName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label>Delivery Address</label>
+            <input asp-for="Address" class="form-control" required />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+
+        <div id="medicines-container">
+            <div class="medicine-row">
+                <div class="form-group">
+                    <label>Medicine</label>
+                    <select name="Medicines[0].ProductId" class="form-control product-select" required>
+                        <option value="">Select Medicine</option>
+                        @foreach (var product in ViewBag.Products)
+                        {
+                            <option value="@product.Value">@product.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <input type="number" name="Medicines[0].Quantity" class="form-control" min="1" required />
+                </div>
+            </div>
+        </div>
+
+        <button type="button" id="add-medicine" class="btn btn-secondary mt-2">Add Another Medicine</button>
+        <button type="submit" class="btn btn-primary mt-2">Create Order</button>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            let medicineIndex = 1;
+
+            $('#add-medicine').click(function () {
+                var newRow = `
+                            <div class="medicine-row">
+                                <div class="form-group">
+                                    <label>Medicine</label>
+                                    <select name="Medicines[${medicineIndex}].ProductId" class="form-control product-select" required>
+                                        <option value="">Select Medicine</option>
+        @foreach (var product in ViewBag.Products)
+        {
+                                                <option value="@product.Value">@product.Text</option>
+        }
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Quantity</label>
+                                    <input type="number" name="Medicines[${medicineIndex}].Quantity" class="form-control" min="1" required />
+                                </div>
+                                <button type="button" class="btn btn-danger remove-medicine">Remove</button>
+                            </div>
+                        `;
+
+                $('#medicines-container').append(newRow);
+                medicineIndex++;
+            });
+
+            // Delegate event for dynamically added remove buttons
+            $(document).on('click', '.remove-medicine', function () {
+                $(this).closest('.medicine-row').remove();
+            });
+        });
+    </script>
 }
-
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.CustomerName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalPrice)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CustomerName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalPrice)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>

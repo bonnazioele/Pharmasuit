@@ -1,11 +1,56 @@
-﻿<h1>Shopping Cart</h1>
-<div>
-    @foreach (var item in Model.Items)
+﻿@model List<CartItem>
+
+<div class="container">
+    <h2>Your Cart</h2>
+
+    @if (Model.Any())
     {
-        <div>
-            <h3>@item.Product.Name</h3>
-            <p>Quantity: @item.Quantity</p>
-            <p>Price: $@item.Product.Price</p>
-        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Product.Name</td>
+                        <td>@item.Product.Price.ToString("C")</td>
+                        <td>
+                            <form asp-action="UpdateQuantity" method="post">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <input type="number" name="quantity" value="@item.Quantity" min="1" />
+                                <button type="submit" class="btn btn-sm btn-secondary">Update</button>
+                            </form>
+                        </td>
+                        <td>@(item.Product.Price * item.Quantity).ToString("C")</td>
+                        <td>
+                            <form asp-action="RemoveFromCart" method="post">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <button type="submit" class="btn btn-danger">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">Total</td>
+                    <td>@Model.Sum(i => i.Product.Price * i.Quantity).ToString("C")</td>
+                    <td>
+                        <a asp-action="Checkout" class="btn btn-primary">Proceed to Checkout</a>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    }
+    else
+    {
+        <p>Your cart is empty.</p>
     }
 </div>

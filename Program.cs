@@ -1,13 +1,17 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Pharmasuit.Data;
 using Pharmasuit.Models;
+using Pharmasuit.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession(); // Add session support
+// Add this to your dependency injection configuration
+builder.Services.AddScoped<CartService>();
 
 // Add DbContext with the connection string
 builder.Services.AddDbContext<PharmasuitContext>(options =>
@@ -16,6 +20,13 @@ builder.Services.AddDbContext<PharmasuitContext>(options =>
 builder.Services.AddIdentity<Account, IdentityRole>()
     .AddEntityFrameworkStores<PharmasuitContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/Login";
+    });
 
 
 var app = builder.Build();

@@ -1,23 +1,45 @@
-﻿@model IEnumerable<Pharmasuit.Models.Product>
+﻿@model List<Product>
 
-@{
-    ViewData["Title"] = "Homepage";
-}
+<div class="container">
+    <h2>Featured Products</h2>
 
-<h2>Welcome to Pharmasuit</h2>
-
-<div class="row">
-    @foreach (var product in Model)
+    @if (TempData["SuccessMessage"] != null)
     {
-        <div class="col-md-4">
-            <div class="card">
-                <img src="@product.ImageURL" class="card-img-top" alt="@product.Name" />
-                <div class="card-body">
-                    <h5 class="card-title">@product.Name</h5>
-                    <p class="card-text">Price: @product.Price.ToString("C")</p>
-                    <a href="/Cart/AddToCart/@product.Id" class="btn btn-primary">Add to Cart</a>
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Name</h5>
+                        <p class="card-text">Price: @product.Price.ToString("C")</p>
+                        <p class="card-text">Stock: @product.Stock</p>
+
+                        <form asp-controller="Home" asp-action="AddToCart" method="post">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <div class="input-group">
+                                <input type="number" name="quantity"
+                                       class="form-control"
+                                       value="1"
+                                       min="1"
+                                       max="@product.Stock" />
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary">
+                                        Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
