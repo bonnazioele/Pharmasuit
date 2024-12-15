@@ -1,0 +1,23 @@
+﻿@model Pharmasuit.Models.Order
+
+@{
+    ViewData["Title"] = "Order Summary";
+}
+
+<h1>Order Summary</h1>
+
+<div>
+    <h3>Order #@Model.Id</h3>
+   @*  <p><strong>Order Date:</strong> @Model.OrderDate.ToString("MM/dd/yyyy")</p> *@
+    <p><strong>Total Amount:</strong> @Model.TotalPrice.ToString("C")</p>
+
+    <h4>Ordered Products</h4>
+    <ul>
+        @foreach (var item in Model.ProductOrder)
+        {
+            <li>@item.Product.Name - Quantity: @item.Quantity</li>
+        }
+    </ul>
+</div>
+
+<a href="@Url.Action("Index", "Product")">Continue Shopping</a>

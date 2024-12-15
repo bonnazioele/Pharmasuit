@@ -1,32 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
+using Pharmasuit.Data;
 using Pharmasuit.Models;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Pharmasuit.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly PharmasuitContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(PharmasuitContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
+        // GET: Home/Index
         public IActionResult Index()
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var products = _context.Products.ToList(); // Get all products from the database
+            return View(products); // Pass products to the view
         }
     }
+
 }

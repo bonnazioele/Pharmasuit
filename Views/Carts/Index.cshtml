@@ -1,0 +1,11 @@
+﻿<h1>Shopping Cart</h1>
+<div>
+    @foreach (var item in Model.Items)
+    {
+        <div>
+            <h3>@item.Product.Name</h3>
+            <p>Quantity: @item.Quantity</p>
+            <p>Price: $@item.Product.Price</p>
+        </div>
+    }
+</div>

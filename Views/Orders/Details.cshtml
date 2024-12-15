@@ -1,0 +1,37 @@
+﻿@model Pharmasuit.Models.Order
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h1>Order Details</h1>
+
+<div>
+    <h3>Order #@Model.Id</h3>
+    <p><strong>Customer Name:</strong> @Model.CustomerName</p>
+    <p><strong>Shipping Address:</strong> @Model.Address</p>
+    <p><strong>Total Amount:</strong> @Model.TotalPrice.ToString("C")</p>
+
+    <h4>Ordered Medicines</h4>
+    <ul>
+        @foreach (var productOrder in Model.Medicines)
+        {
+            <li>
+                @* Fetch product details based on ProductId *@
+                @* Assuming you have access to a method or can modify this to retrieve product info from the database *@
+                @* Example of getting the product from the database (you can use your DbContext or inject it into the controller): *@
+                @*
+            var product = _context.Products.FirstOrDefault(p => p.Id == productOrder.ProductId);
+            if (product != null)
+            {
+            <p>@product.Name</p>
+            }
+            *@
+                <p>Product ID: @productOrder.ProductId</p>
+                <p>Quantity: @productOrder.Quantity</p>
+            </li>
+        }
+    </ul>
+</div>
+
+<a href="@Url.Action("Index", "Product")">Continue Shopping</a>

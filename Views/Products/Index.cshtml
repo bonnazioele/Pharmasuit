@@ -1,0 +1,19 @@
+﻿@model IEnumerable<Pharmasuit.Models.Product>
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<h1>Product List</h1>
+
+<div>
+    @foreach (var product in Model)
+    {
+        <div class="product-item">
+            <h3>@product.Name</h3>
+            <p>@product.Description</p>
+            <p>Price: @product.Price.ToString("C")</p>
+            <a href="@Url.Action("Details", "Product", new { id = product.Id })">View Details</a>
+        </div>
+    }
+</div>
